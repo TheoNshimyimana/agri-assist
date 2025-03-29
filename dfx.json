@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "agri-assist-backend": {
+      "main": "src/agri-assist-backend/main.mo",
+      "type": "motoko"
+    },
+    "agri-assist-frontend": {
+      "dependencies": [
+        "agri-assist-backend"
+      ],
+      "source": [
+        "src/agri-assist-frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "agri-assist-frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
