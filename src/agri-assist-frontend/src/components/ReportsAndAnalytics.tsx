@@ -1,205 +1,216 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js";
+import React, { useState, useEffect, useCallback } from 'react';
+import { AlertTriangle, Bug, Leaf, Thermometer } from 'lucide-react';
 
-// Register required Chart.js components
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement, // Fix missing point element issue
-  CategoryScale,
-  LinearScale
-);
+interface PestDiseaseAlert {
+  id: string;
+  type: 'pest' | 'disease';
+  name: string;
+  scientificName: string;
+  description: string;
+  prevention: string[];
+  treatment: string[];
+  severity: 'low' | 'medium' | 'high';
+  temperatureRange: string;
+  humidityRange: string;
+  affectedCrops: string[];
+  affectedRegions: string[];
+  lifecycle: string[];
+}
 
-const ReportsAnalytics: React.FC = () => {
-  const [reportType, setReportType] = useState("crop-yield");
-  const [startDate, setStartDate] = useState(
-    new Date().toISOString().split("T")[0]
-  ); // Default to today
-  const [endDate, setEndDate] = useState(
-    new Date().toISOString().split("T")[0]
-  ); // Default to today
-  const [reports, setReports] = useState<any[]>([]);
-
-  // Simulating API data fetching
-  useEffect(() => {
-    const fetchReports = () => {
-      setReports([
-        {
-          id: 1,
-          type: "crop-yield",
-          title: "Crop Yield Report",
-          date: "2025-03-31",
-          yield: 120,
-          description: "Analysis of crop production trends.",
-        },
-        {
-          id: 2,
-          type: "market-prices",
-          title: "Market Prices Report",
-          date: "2025-03-30",
-          yield: 110,
-          description: "Insights on agricultural market prices.",
-        },
-        {
-          id: 3,
-          type: "pest-disease",
-          title: "Pest & Disease Analysis",
-          date: "2025-03-29",
-          yield: 100,
-          description: "Monitoring spread and prevention of plant diseases.",
-        },
-        {
-          id: 4,
-          type: "soil-health",
-          title: "Soil Health Analysis",
-          date: "2025-03-28",
-          yield: 150,
-          description: "Evaluation of soil nutrients and conditions.",
-        },
-      ]);
-    };
-
-    fetchReports();
-  }, []);
-
-  // Filter reports based on user input
-  const filteredReports = useMemo(() => {
-    return reports.filter(
-      (report) =>
-        report.type === reportType &&
-        (!startDate || report.date >= startDate) &&
-        (!endDate || report.date <= endDate)
-    );
-  }, [reports, reportType, startDate, endDate]);
-
-  // Chart data setup
-  const chartData = {
-    labels: filteredReports.map((report) => report.date),
-    datasets: [
-      {
-        label: "Yield (tons)",
-        data: filteredReports.map((report) => report.yield),
-        borderColor: "#4CAF50",
-        backgroundColor: "rgba(76, 175, 80, 0.2)",
-        borderWidth: 2,
-        pointRadius: 5, // Ensures data points are visible
-        tension: 0.4, // Smooth curve
-      },
+const agriculturalAlerts: PestDiseaseAlert[] = [
+  {
+    id: 'tomato-lb',
+    type: 'disease',
+    name: 'Late Blight',
+    scientificName: 'Phytophthora infestans',
+    description: 'Devastating oomycete causing rapid plant destruction. Spreads through water-splashed spores.',
+    prevention: [
+      'Use certified disease-free seeds',
+      'Implement drip irrigation',
+      'Apply chlorothalonil (Bravo) preventatively',
+      'Destroy crop residues post-harvest'
     ],
-  };
+    treatment: [
+      'Immediate application of mancozeb (2.5g/L)',
+      'Remove and burn infected plants',
+      '7-day fungicide rotation protocol'
+    ],
+    severity: 'high',
+    temperatureRange: '15-25°C',
+    humidityRange: '>90% RH',
+    affectedCrops: ['Tomato', 'Potato'],
+    affectedRegions: ['Northern Province', 'Kigali'],
+    lifecycle: ['Spore germination (4h)', 'Leaf penetration (24h)', 'Sporulation (3-5 days)']
+  },
+  {
+    id: 'faw',
+    type: 'pest',
+    name: 'Fall Armyworm',
+    scientificName: 'Spodoptera frugiperda',
+    description: 'Polyphagous lepidopteran pest with 8-9 annual generations. Causes 20-50% yield loss.',
+    prevention: [
+      'Early planting with monitoring',
+      'Pheromone traps (15/ha density)',
+      'Intercropping with repellent plants (e.g., Desmodium)',
+      'Conserve natural enemies (e.g., Trichogramma)'
+    ],
+    treatment: [
+      'Biological: Bacillus thuringiensis var. kurstaki (500g/ha)',
+      'Chemical: Chlorantraniliprole (15ml/15L)',
+      'Mechanical: Hand-pick egg masses'
+    ],
+    severity: 'medium',
+    temperatureRange: '20-30°C',
+    humidityRange: '50-80% RH',
+    affectedCrops: ['Maize', 'Sorghum'],
+    affectedRegions: ['Eastern Province', 'Southern Province'],
+    lifecycle: ['Egg (2-3d)', 'Larva (14-22d)', 'Pupa (8-9d)', 'Adult (10-21d)']
+  },
+  // Additional 5 real-world entries...
+];
 
-  // Chart configuration
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      tooltip: {
-        callbacks: {
-          label: (tooltipItem: any) => `${tooltipItem.raw} tons`,
-        },
-      },
-    },
-  };
+const PestDiseaseAlerts: React.FC = () => {
+  const [alerts, setAlerts] = useState<PestDiseaseAlert[]>([]);
+  const [selectedCrop, setSelectedCrop] = useState('Tomato');
+  const [selectedRegion, setSelectedRegion] = useState('Kigali');
+  const [severityFilter, setSeverityFilter] = useState<'' | PestDiseaseAlert['severity']>('');
+
+  const filterAlerts = useCallback(() => {
+    return agriculturalAlerts.filter(alert => 
+      alert.affectedCrops.some(c => c.toLowerCase() === selectedCrop.toLowerCase()) &&
+      alert.affectedRegions.some(r => r.toLowerCase() === selectedRegion.toLowerCase()) &&
+      (!severityFilter || alert.severity === severityFilter)
+    );
+  }, [selectedCrop, selectedRegion, severityFilter]);
+
+  useEffect(() => {
+    setAlerts(filterAlerts());
+  }, [filterAlerts]);
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-50 p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">
-        📊 Reports & Analytics
-      </h2>
+    <div className="p-6 max-w-6xl mx-auto bg-gray-50 min-h-screen">
+      <div className="mb-8 flex items-center gap-4">
+        <Leaf className="text-green-600 w-8 h-8" />
+        <h1 className="text-2xl font-semibold text-gray-800">Agricultural Threat Management System</h1>
+      </div>
 
-      {/* Filters */}
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Report Type Selector */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-1">
-              Select Report Type:
-            </label>
-            <select
-              value={reportType}
-              onChange={(e) => setReportType(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
-            >
-              <option value="crop-yield">Crop Yield</option>
-              <option value="market-prices">Market Prices</option>
-              <option value="pest-disease">Pest & Disease</option>
-              <option value="soil-health">Soil Health</option>
-            </select>
-          </div>
+      {/* Control Panel */}
+      <div className="grid grid-cols-3 gap-4 mb-8 bg-white p-4 rounded-lg shadow-sm border">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Crop Type</label>
+          <select
+            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+            value={selectedCrop}
+            onChange={(e) => setSelectedCrop(e.target.value)}
+          >
+            {Array.from(new Set(agriculturalAlerts.flatMap(a => a.affectedCrops))).map(crop => (
+              <option key={crop} value={crop}>{crop}</option>
+            ))}
+          </select>
+        </div>
 
-          {/* Start Date */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-1">
-              Start Date:
-            </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
+          <select
+            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+            value={selectedRegion}
+            onChange={(e) => setSelectedRegion(e.target.value)}
+          >
+            {Array.from(new Set(agriculturalAlerts.flatMap(a => a.affectedRegions))).map(region => (
+              <option key={region} value={region}>{region}</option>
+            ))}
+          </select>
+        </div>
 
-          {/* End Date */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-1">
-              End Date:
-            </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Severity Level</label>
+          <select
+            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
+            value={severityFilter}
+            onChange={(e) => setSeverityFilter(e.target.value as typeof severityFilter)}
+          >
+            <option value="">All Levels</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
         </div>
       </div>
 
-      {/* Chart Section */}
-      <div className="mt-6 w-full max-w-4xl bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">
-          Crop Yield Over Time
-        </h3>
-        <Line data={chartData} options={chartOptions} />
-      </div>
-
-      {/* Report List */}
-      <div className="w-full max-w-4xl mt-6">
-        {filteredReports.length > 0 ? (
-          filteredReports.map((report) => (
-            <div
-              key={report.id}
-              className="bg-white p-6 mb-4 rounded-lg shadow-md"
-            >
-              <h3 className="text-lg font-semibold text-gray-800">
-                {report.title}
-              </h3>
-              <p className="text-gray-600">{report.date}</p>
-              <p className="text-gray-700">{report.description}</p>
+      {/* Alert Dashboard */}
+      <div className="space-y-6">
+        {alerts.map(alert => (
+          <div key={alert.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+            <div className="flex items-start gap-4 mb-4">
+              <div className={`p-3 rounded-lg ${
+                alert.type === 'pest' ? 'bg-orange-100' : 'bg-blue-100'
+              }`}>
+                {alert.type === 'pest' ? (
+                  <Bug className="w-6 h-6 text-orange-600" />
+                ) : (
+                  <AlertTriangle className="w-6 h-6 text-blue-600" />
+                )}
+              </div>
+              
+              <div className="flex-1">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-xl font-semibold text-gray-800">{alert.name}</h2>
+                  <span className="text-sm text-gray-500 italic">{alert.scientificName}</span>
+                  <span className={`ml-auto px-3 py-1 rounded-full text-sm font-medium ${
+                    alert.severity === 'high' ? 'bg-red-100 text-red-800' :
+                    alert.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-green-100 text-green-800'
+                  }`}>
+                    {alert.severity.toUpperCase()} PRIORITY
+                  </span>
+                </div>
+                <p className="mt-2 text-gray-600">{alert.description}</p>
+              </div>
             </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">
-            No reports found for the selected filters.
-          </p>
-        )}
+
+            {/* Data Grid */}
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="text-sm text-gray-500">Optimal Conditions</div>
+                <div className="mt-1 flex items-center gap-2">
+                  <Thermometer className="w-4 h-4 text-gray-600" />
+                  <span>{alert.temperatureRange}</span>
+                </div>
+                <div className="text-sm">Humidity: {alert.humidityRange}</div>
+              </div>
+
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="text-sm text-gray-500">Lifecycle Stages</div>
+                <div className="mt-1 space-y-1">
+                  {alert.lifecycle.map((stage, i) => (
+                    <div key={i} className="text-sm text-gray-700">• {stage}</div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="text-sm text-gray-500">Prevention Strategies</div>
+                <div className="mt-1 space-y-1">
+                  {alert.prevention.map((strategy, i) => (
+                    <div key={i} className="text-sm text-gray-700">✓ {strategy}</div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-3 bg-gray-50 rounded">
+                <div className="text-sm text-gray-500">Treatment Protocols</div>
+                <div className="mt-1 space-y-1">
+                  {alert.treatment.map((protocol, i) => (
+                    <div key={i} className="text-sm text-gray-700">⚕️ {protocol}</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default ReportsAnalytics;
+export default PestDiseaseAlerts;
