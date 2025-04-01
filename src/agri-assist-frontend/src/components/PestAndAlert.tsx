@@ -1,210 +1,197 @@
-import React, { useState, useEffect } from "react";
-import { Info, Leaf, Download } from "lucide-react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import React from "react";
+import { Leaf, Bug, Sprout, ShieldAlert, SprayCan } from "lucide-react";
 
-interface SoilData {
-  timestamp: string;
-  ph: number;
-  nitrogen: number;
-  phosphorus: number;
-  potassium: number;
-  organicMatter: number;
-  moisture: number;
-  temperature: number;
-  salinity: number;
-  compaction: number;
-  aeration: number;
-  microbialActivity: number;
+interface PestDisease {
+  name: string;
+  type: "pest" | "disease";
+  severity: "low" | "medium" | "high";
+  description: string;
+  prevention: string[];
+  treatment: string[];
+  seasonality: string[];
 }
 
-// Sample fallback data to display if the API returns nothing
-const sampleData: SoilData[] = [
+const pestAndDiseasesData: PestDisease[] = [
   {
-    timestamp: new Date().toISOString(),
-    ph: 6.5,
-    nitrogen: 0.25,
-    phosphorus: 0.15,
-    potassium: 0.2,
-    organicMatter: 2.7,
-    moisture: 45,
-    temperature: 22,
-    salinity: 1.0,
-    compaction: 30,
-    aeration: 60,
-    microbialActivity: 75,
+    name: "Aphids",
+    type: "pest",
+    severity: "medium",
+    description: "Sap-sucking insects causing leaf curl and stunted growth",
+    prevention: [
+      "Introduce ladybugs as natural predators",
+      "Apply neem oil every 2 weeks",
+      "Use reflective mulches",
+    ],
+    treatment: [
+      "Spray insecticidal soap (2 tbsp/gal)",
+      "Apply pyrethrin-based insecticides",
+      "Prune heavily infested areas",
+    ],
+    seasonality: ["Spring", "Early Summer"],
   },
   {
-    timestamp: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-    ph: 6.4,
-    nitrogen: 0.26,
-    phosphorus: 0.14,
-    potassium: 0.19,
-    organicMatter: 2.8,
-    moisture: 47,
-    temperature: 21,
-    salinity: 1.1,
-    compaction: 32,
-    aeration: 58,
-    microbialActivity: 72,
+    name: "Powdery Mildew",
+    type: "disease",
+    severity: "high",
+    description: "Fungal infection showing white powdery leaf coating",
+    prevention: [
+      "Maintain 50-70% humidity",
+      "Ensure 6hr+ daily sunlight",
+      'Space plants 18-24" apart',
+    ],
+    treatment: [
+      "Apply potassium bicarbonate solution",
+      "Use sulfur-based fungicides",
+      "Remove infected leaves immediately",
+    ],
+    seasonality: ["Humid Seasons", "Fall"],
+  },
+  {
+    name: "Tomato Blight",
+    type: "disease",
+    severity: "high",
+    description: "Rapid fungal disease causing leaf spot and fruit rot",
+    prevention: [
+      "Rotate crops annually",
+      "Use drip irrigation systems",
+      "Select blight-resistant varieties",
+    ],
+    treatment: [
+      "Apply copper fungicide weekly",
+      "Destroy infected plants",
+      "Solarize soil post-harvest",
+    ],
+    seasonality: ["Rainy Seasons", "Summer"],
   },
 ];
 
-const fetchSoilData = async (): Promise<SoilData[]> => {
-  try {
-    const response = await fetch("https://api.example.com/soil-data");
-    const data = await response.json();
-    // If the API returns an empty array or invalid data, fallback to sample data
-    if (!data || data.length === 0) {
-      return sampleData;
-    }
-    return data;
-  } catch (error) {
-    console.error("Error fetching soil data:", error);
-    return sampleData;
-  }
-};
-
-const SoilHealthAnalysis: React.FC = () => {
-  const [soilData, setSoilData] = useState<SoilData[]>([]);
-
-  useEffect(() => {
-    fetchSoilData().then((data) => {
-      setSoilData(data);
-    });
-  }, []);
-
-  const optimalRanges = {
-    ph: { min: 6.0, max: 7.0 },
-    nitrogen: { min: 0.2, max: 0.3 },
-    phosphorus: { min: 0.1, max: 0.2 },
-    potassium: { min: 0.15, max: 0.25 },
-    organicMatter: { min: 2.0, max: 3.0 },
-    moisture: { min: 30, max: 60 },
-    temperature: { min: 18, max: 25 },
-    salinity: { min: 0.5, max: 1.5 },
-    compaction: { min: 20, max: 40 },
-    aeration: { min: 50, max: 70 },
-    microbialActivity: { min: 60, max: 90 },
-  };
-
-  const generatePDF = () => {
-    const doc = new jsPDF();
-    doc.text("Soil Health Analysis Report", 20, 20);
-    autoTable(doc, {
-      head: [["Parameter", "Value", "Optimal Range"]],
-      body: Object.keys(optimalRanges).map((key) => {
-        const value =
-          soilData.length > 0
-            ? soilData[soilData.length - 1][key as keyof SoilData]
-            : "-";
-        const range = optimalRanges[key as keyof typeof optimalRanges];
-        return [key, value, `${range.min} - ${range.max}`];
-      }),
-    });
-    doc.save("soil_health_report.pdf");
-  };
-
+const PestAndAlert: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-              <Leaf className="w-8 h-8 text-green-600" />
-              Soil Health Analysis
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50/80 to-white p-8">
+      <div className="max-w-7xl mx-auto space-y-12">
+        {/* Header Section */}
+        <header className="text-center space-y-6">
+          <div className="inline-flex items-center gap-3 bg-white px-8 py-4 rounded-xl shadow-lg">
+            <h1 className="text-4xl font-bold text-green-600 tracking-tight">
+              Integrated Pest Management Guide
             </h1>
-            <p className="mt-2 text-gray-500 flex items-center gap-2">
-              <Info className="w-4 h-4" />
-              Last updated:{" "}
-              {soilData.length > 0
-                ? new Date(
-                    soilData[soilData.length - 1].timestamp
-                  ).toLocaleDateString()
-                : "-"}
-            </p>
+            <Bug className="w-8 h-8 text-amber-600" />
           </div>
-          <button
-            onClick={generatePDF}
-            className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
-          >
-            <Download className="w-5 h-5" /> Download Report
-          </button>
-        </div>
+          <p className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+            Learn about science-based crop protection strategies with detailed
+            prevention and treatment protocols.
+          </p>
+        </header>
 
-        {/* Cards for Soil Parameters */}
-        {soilData.length === 0 ? (
-          <div className="animate-pulse space-y-6">
-            <div className="h-4 bg-gray-200 rounded w-1/3 mb-8" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[...Array(10)].map((_, i) => (
-                <div key={i} className="h-32 bg-gray-100 rounded-xl" />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Object.keys(optimalRanges).map((key) => {
-              const value =
-                soilData.length > 0
-                  ? soilData[soilData.length - 1][key as keyof SoilData]
-                  : undefined;
-              const range = optimalRanges[key as keyof typeof optimalRanges];
-              const isOutOfRange =
-                typeof value === "number" &&
-                (value < range.min || value > range.max);
-              return (
-                <div
-                  key={key}
-                  className={`bg-white rounded-xl p-6 shadow-lg border border-gray-100 ${
-                    isOutOfRange ? "border-red-500" : ""
-                  }`}
-                >
-                  <h3 className="font-semibold text-lg">
-                    {key.charAt(0).toUpperCase() + key.slice(1)}
-                  </h3>
-                  <p
-                    className={`text-4xl font-bold ${
-                      isOutOfRange ? "text-red-500" : "text-gray-800"
+        {/* Main Content Grid */}
+        <div className="grid lg:grid-cols-3 gap-10">
+          {pestAndDiseasesData.map((item, index) => (
+            <article
+              key={index}
+              className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden"
+            >
+              {/* Card Header */}
+              <div
+                className={`p-5 border-b ${
+                  item.type === "pest" ? "bg-amber-50" : "bg-blue-50"
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`p-3 rounded-lg ${
+                      item.type === "pest" ? "bg-amber-100" : "bg-blue-100"
                     }`}
                   >
-                    {value !== undefined ? value : "No Data"}
-                  </p>
+                    {item.type === "pest" ? (
+                      <Bug className="w-6 h-6 text-amber-600" />
+                    ) : (
+                      <ShieldAlert className="w-6 h-6 text-blue-600" />
+                    )}
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-800">
+                    {item.name}
+                  </h2>
+                  <span
+                    className={`ml-auto px-4 py-1 rounded-full text-sm font-medium ${
+                      item.severity === "high"
+                        ? "bg-red-100 text-red-700"
+                        : item.severity === "medium"
+                        ? "bg-amber-100 text-amber-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {item.severity.toUpperCase()}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </div>
 
-        {/* Chart Section */}
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Soil Parameter Trends
-          </h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={soilData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="ph" stroke="#8884d8" />
-              <Line type="monotone" dataKey="moisture" stroke="#82ca9d" />
-            </LineChart>
-          </ResponsiveContainer>
+              {/* Card Body */}
+              <div className="p-6 space-y-6">
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {item.description}
+                </p>
+
+                {/* Seasonality */}
+                <div className="space-y-2">
+                  <h3 className="flex items-center gap-2 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                    <Sprout className="w-4 h-4 text-emerald-600" />
+                    Active Seasons
+                  </h3>
+                  <div className="flex flex-wrap gap-3">
+                    {item.seasonality.map((season, i) => (
+                      <span
+                        key={i}
+                        className="px-4 py-1 rounded-full bg-gray-200 text-gray-700 text-sm"
+                      >
+                        {season}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Prevention & Treatment Columns */}
+                <div className="grid gap-8">
+                  <div className="space-y-4">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-emerald-700 uppercase tracking-wide">
+                      <ShieldAlert className="w-4 h-4" />
+                      Prevention Protocol
+                    </h3>
+                    <ul className="space-y-2 pl-4">
+                      {item.prevention.map((step, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start before:content-['·'] before:text-emerald-600 before:mr-3 before:font-bold text-gray-600 text-sm"
+                        >
+                          {step}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="flex items-center gap-2 text-sm font-semibold text-rose-600 uppercase tracking-wide">
+                      <SprayCan className="w-4 h-4" />
+                      Treatment Plan
+                    </h3>
+                    <ul className="space-y-2 pl-4">
+                      {item.treatment.map((step, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start before:content-['·'] before:text-rose-500 before:mr-3 before:font-bold text-gray-600 text-sm"
+                        >
+                          {step}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </div>
   );
 };
 
-export default SoilHealthAnalysis;
+export default PestAndAlert;

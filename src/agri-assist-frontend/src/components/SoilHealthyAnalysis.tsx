@@ -26,7 +26,7 @@ interface SoilData {
   microbialActivity: number;
 }
 
-const ReportsAndAnalytics: React.FC = () => {
+const SoilHealthyAnalysis: React.FC = () => {
   const [soilData, setSoilData] = useState<SoilData | null>(null);
 
   useEffect(() => {
@@ -168,4 +168,4 @@ const ReportsAndAnalytics: React.FC = () => {
   );
 };
 
-export default ReportsAndAnalytics;
+export default SoilHealthyAnalysis;
