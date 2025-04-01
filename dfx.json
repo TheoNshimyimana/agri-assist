@@ -12,7 +12,8 @@
         "src/agri-assist-frontend/dist"
       ],
       "type": "assets",
-      "workspace": "agri-assist-frontend"
+      "workspace": "agri-assist-frontend",
+      "headers": "src/agri-assist-frontend/headers.json"
     }
   },
   "defaults": {

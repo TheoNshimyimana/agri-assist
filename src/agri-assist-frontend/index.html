@@ -3,14 +3,24 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width" />
-  <title>IC Hello Starter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  
+  <title>IC-agri-assist</title>
+
+  <!-- Content-Security-Policy to allow OpenWeatherMap and other necessary sources -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src *; 
+    style-src 'self' 'unsafe-inline'; 
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com; 
+    connect-src 'self' http://localhost:* https://icp0.io https://*.icp0.io https://icp-api.io https://api.openweathermap.org;
+  ">
+
   <base href="/" />
   <link rel="icon" href="/favicon.ico" />
 </head>
 
 <body>
- 
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
