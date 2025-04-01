@@ -10,13 +10,13 @@ const Chatbot: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  // In production: use environment variables (process.env.REACT_APP_GOOEY_KEY)
+
   const API_KEY = "sk-cFuabsslQHwsgj8SOQLHH4EIC7U9BKQEjDbyfiguZ2aUaexK";
 
   const sendMessage = async () => {
     if (!message.trim()) return;
 
-    // Security check for live keys
+   
     if (
       API_KEY.startsWith("goey_sk_live") &&
       window.location.hostname === "localhost"
