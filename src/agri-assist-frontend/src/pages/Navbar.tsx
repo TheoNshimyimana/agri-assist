@@ -23,7 +23,7 @@ const Navbar = () => {
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-md p-4 flex justify-between items-center">
       {/* Logo */}
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Climate Change-Smart AGRI-Assist (AI for Sustainable Farming) 🌱</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ai-Powered AGRI-Assist (AI for Sustainable Farming) 🌱</h1>
 
       {/* Icons */}
       <div className="flex items-center gap-4">

@@ -88,7 +88,7 @@ const Chatbot: React.FC = () => {
     <div className="h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-6">
       <div className="w-full max-w-full rounded-lg shadow-lg flex flex-col">
         <div className="p-4 rounded-t-lg text-center text-3xl font-bold mb-4">
-          Gooey AI Assistant
+          How Can I Assist you Today
         </div>
 
         <div

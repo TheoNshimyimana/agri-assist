@@ -26,7 +26,7 @@ interface SoilData {
   microbialActivity: number;
 }
 
-const SoilHealthAnalysis: React.FC = () => {
+const ReportsAndAnalytics: React.FC = () => {
   const [soilData, setSoilData] = useState<SoilData | null>(null);
 
   useEffect(() => {
@@ -133,7 +133,7 @@ const SoilHealthAnalysis: React.FC = () => {
                     </span>
                   </div>
                   <div className="relative pt-4">
-                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-green-400 to-green-600"
                         style={{
@@ -168,4 +168,4 @@ const SoilHealthAnalysis: React.FC = () => {
   );
 };
 
-export default SoilHealthAnalysis;
+export default ReportsAndAnalytics;

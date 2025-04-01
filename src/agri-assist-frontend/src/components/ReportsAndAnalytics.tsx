@@ -1,216 +1,171 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { AlertTriangle, Bug, Leaf, Thermometer } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Info,
+  Droplet,
+  Leaf,
+  Sun,
+  Thermometer,
+  Zap,
+  CloudRain,
+  ThermometerSun,
+  Waves,
+  Layers,
+} from "lucide-react";
 
-interface PestDiseaseAlert {
-  id: string;
-  type: 'pest' | 'disease';
-  name: string;
-  scientificName: string;
-  description: string;
-  prevention: string[];
-  treatment: string[];
-  severity: 'low' | 'medium' | 'high';
-  temperatureRange: string;
-  humidityRange: string;
-  affectedCrops: string[];
-  affectedRegions: string[];
-  lifecycle: string[];
+interface SoilData {
+  ph: number;
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
+  organicMatter: number;
+  moisture: number;
+  temperature: number;
+  salinity: number;
+  compaction: number;
+  aeration: number;
+  microbialActivity: number;
 }
 
-const agriculturalAlerts: PestDiseaseAlert[] = [
-  {
-    id: 'tomato-lb',
-    type: 'disease',
-    name: 'Late Blight',
-    scientificName: 'Phytophthora infestans',
-    description: 'Devastating oomycete causing rapid plant destruction. Spreads through water-splashed spores.',
-    prevention: [
-      'Use certified disease-free seeds',
-      'Implement drip irrigation',
-      'Apply chlorothalonil (Bravo) preventatively',
-      'Destroy crop residues post-harvest'
-    ],
-    treatment: [
-      'Immediate application of mancozeb (2.5g/L)',
-      'Remove and burn infected plants',
-      '7-day fungicide rotation protocol'
-    ],
-    severity: 'high',
-    temperatureRange: '15-25°C',
-    humidityRange: '>90% RH',
-    affectedCrops: ['Tomato', 'Potato'],
-    affectedRegions: ['Northern Province', 'Kigali'],
-    lifecycle: ['Spore germination (4h)', 'Leaf penetration (24h)', 'Sporulation (3-5 days)']
-  },
-  {
-    id: 'faw',
-    type: 'pest',
-    name: 'Fall Armyworm',
-    scientificName: 'Spodoptera frugiperda',
-    description: 'Polyphagous lepidopteran pest with 8-9 annual generations. Causes 20-50% yield loss.',
-    prevention: [
-      'Early planting with monitoring',
-      'Pheromone traps (15/ha density)',
-      'Intercropping with repellent plants (e.g., Desmodium)',
-      'Conserve natural enemies (e.g., Trichogramma)'
-    ],
-    treatment: [
-      'Biological: Bacillus thuringiensis var. kurstaki (500g/ha)',
-      'Chemical: Chlorantraniliprole (15ml/15L)',
-      'Mechanical: Hand-pick egg masses'
-    ],
-    severity: 'medium',
-    temperatureRange: '20-30°C',
-    humidityRange: '50-80% RH',
-    affectedCrops: ['Maize', 'Sorghum'],
-    affectedRegions: ['Eastern Province', 'Southern Province'],
-    lifecycle: ['Egg (2-3d)', 'Larva (14-22d)', 'Pupa (8-9d)', 'Adult (10-21d)']
-  },
-  // Additional 5 real-world entries...
-];
-
-const PestDiseaseAlerts: React.FC = () => {
-  const [alerts, setAlerts] = useState<PestDiseaseAlert[]>([]);
-  const [selectedCrop, setSelectedCrop] = useState('Tomato');
-  const [selectedRegion, setSelectedRegion] = useState('Kigali');
-  const [severityFilter, setSeverityFilter] = useState<'' | PestDiseaseAlert['severity']>('');
-
-  const filterAlerts = useCallback(() => {
-    return agriculturalAlerts.filter(alert => 
-      alert.affectedCrops.some(c => c.toLowerCase() === selectedCrop.toLowerCase()) &&
-      alert.affectedRegions.some(r => r.toLowerCase() === selectedRegion.toLowerCase()) &&
-      (!severityFilter || alert.severity === severityFilter)
-    );
-  }, [selectedCrop, selectedRegion, severityFilter]);
+const ReportsAndAnalytics: React.FC = () => {
+  const [soilData, setSoilData] = useState<SoilData | null>(null);
 
   useEffect(() => {
-    setAlerts(filterAlerts());
-  }, [filterAlerts]);
+    const timer = setTimeout(() => {
+      setSoilData({
+        ph: 6.5,
+        nitrogen: 0.25,
+        phosphorus: 0.15,
+        potassium: 0.2,
+        organicMatter: 2.5,
+        moisture: 45,
+        temperature: 22,
+        salinity: 1.2,
+        compaction: 30,
+        aeration: 60,
+        microbialActivity: 80,
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const optimalRanges = {
+    ph: { min: 6.0, max: 7.0 },
+    nitrogen: { min: 0.2, max: 0.3 },
+    phosphorus: { min: 0.1, max: 0.2 },
+    potassium: { min: 0.15, max: 0.25 },
+    organicMatter: { min: 2.0, max: 3.0 },
+    moisture: { min: 30, max: 60 },
+    temperature: { min: 18, max: 25 },
+    salinity: { min: 0.5, max: 1.5 },
+    compaction: { min: 20, max: 40 },
+    aeration: { min: 50, max: 70 },
+    microbialActivity: { min: 60, max: 90 },
+  };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto bg-gray-50 min-h-screen">
-      <div className="mb-8 flex items-center gap-4">
-        <Leaf className="text-green-600 w-8 h-8" />
-        <h1 className="text-2xl font-semibold text-gray-800">Agricultural Threat Management System</h1>
-      </div>
-
-      {/* Control Panel */}
-      <div className="grid grid-cols-3 gap-4 mb-8 bg-white p-4 rounded-lg shadow-sm border">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Crop Type</label>
-          <select
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
-            value={selectedCrop}
-            onChange={(e) => setSelectedCrop(e.target.value)}
-          >
-            {Array.from(new Set(agriculturalAlerts.flatMap(a => a.affectedCrops))).map(crop => (
-              <option key={crop} value={crop}>{crop}</option>
-            ))}
-          </select>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-green-500 mb-5 flex justify-center  gap-3">
+              Soil Health Analysis
+            </h1>
+            <p className="text-gray-700 mb-6 text-xl text-center leading-9">
+              Soil Health Analysis evaluates key soil properties such as pH,
+              moisture, nutrient levels, and microbial activity to determine
+              overall soil fertility and sustainability. This analysis helps
+              optimize agricultural practices.
+            </p>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Region</label>
-          <select
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
-            value={selectedRegion}
-            onChange={(e) => setSelectedRegion(e.target.value)}
-          >
-            {Array.from(new Set(agriculturalAlerts.flatMap(a => a.affectedRegions))).map(region => (
-              <option key={region} value={region}>{region}</option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Severity Level</label>
-          <select
-            className="w-full p-2 border rounded-md focus:ring-2 focus:ring-green-500"
-            value={severityFilter}
-            onChange={(e) => setSeverityFilter(e.target.value as typeof severityFilter)}
-          >
-            <option value="">All Levels</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Alert Dashboard */}
-      <div className="space-y-6">
-        {alerts.map(alert => (
-          <div key={alert.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="flex items-start gap-4 mb-4">
-              <div className={`p-3 rounded-lg ${
-                alert.type === 'pest' ? 'bg-orange-100' : 'bg-blue-100'
-              }`}>
-                {alert.type === 'pest' ? (
-                  <Bug className="w-6 h-6 text-orange-600" />
-                ) : (
-                  <AlertTriangle className="w-6 h-6 text-blue-600" />
-                )}
-              </div>
-              
-              <div className="flex-1">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-xl font-semibold text-gray-800">{alert.name}</h2>
-                  <span className="text-sm text-gray-500 italic">{alert.scientificName}</span>
-                  <span className={`ml-auto px-3 py-1 rounded-full text-sm font-medium ${
-                    alert.severity === 'high' ? 'bg-red-100 text-red-800' :
-                    alert.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-green-100 text-green-800'
-                  }`}>
-                    {alert.severity.toUpperCase()} PRIORITY
-                  </span>
-                </div>
-                <p className="mt-2 text-gray-600">{alert.description}</p>
-              </div>
-            </div>
-
-            {/* Data Grid */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
-              <div className="p-3 bg-gray-50 rounded">
-                <div className="text-sm text-gray-500">Optimal Conditions</div>
-                <div className="mt-1 flex items-center gap-2">
-                  <Thermometer className="w-4 h-4 text-gray-600" />
-                  <span>{alert.temperatureRange}</span>
-                </div>
-                <div className="text-sm">Humidity: {alert.humidityRange}</div>
-              </div>
-
-              <div className="p-3 bg-gray-50 rounded">
-                <div className="text-sm text-gray-500">Lifecycle Stages</div>
-                <div className="mt-1 space-y-1">
-                  {alert.lifecycle.map((stage, i) => (
-                    <div key={i} className="text-sm text-gray-700">• {stage}</div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-3 bg-gray-50 rounded">
-                <div className="text-sm text-gray-500">Prevention Strategies</div>
-                <div className="mt-1 space-y-1">
-                  {alert.prevention.map((strategy, i) => (
-                    <div key={i} className="text-sm text-gray-700">✓ {strategy}</div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-3 bg-gray-50 rounded">
-                <div className="text-sm text-gray-500">Treatment Protocols</div>
-                <div className="mt-1 space-y-1">
-                  {alert.treatment.map((protocol, i) => (
-                    <div key={i} className="text-sm text-gray-700">⚕️ {protocol}</div>
-                  ))}
-                </div>
-              </div>
+        {!soilData ? (
+          <div className="animate-pulse space-y-6">
+            <div className="h-4 bg-gray-200 rounded w-1/3 mb-8" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[...Array(10)].map((_, i) => (
+                <div key={i} className="h-32 bg-gray-100 rounded-xl" />
+              ))}
             </div>
           </div>
-        ))}
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Object.keys(optimalRanges).map((key) => (
+              <div
+                key={key}
+                className="bg-white rounded-xl p-6 shadow-lg border border-gray-100"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-lg flex items-center gap-2">
+                    {key === "ph" ? (
+                      <Droplet className="w-5 h-5 text-blue-500" />
+                    ) : key === "nitrogen" ? (
+                      <Zap className="w-5 h-5 text-purple-500" />
+                    ) : key === "phosphorus" ? (
+                      <Sun className="w-5 h-5 text-orange-500" />
+                    ) : key === "potassium" ? (
+                      <Thermometer className="w-5 h-5 text-yellow-500" />
+                    ) : key === "organicMatter" ? (
+                      <Leaf className="w-5 h-5 text-green-500" />
+                    ) : key === "moisture" ? (
+                      <CloudRain className="w-5 h-5 text-blue-400" />
+                    ) : key === "temperature" ? (
+                      <ThermometerSun className="w-5 h-5 text-red-500" />
+                    ) : key === "salinity" ? (
+                      <Waves className="w-5 h-5 text-teal-500" />
+                    ) : (
+                      <Layers className="w-5 h-5 text-gray-600" />
+                    )}
+                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                  </h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="text-4xl font-bold text-gray-800">
+                    {soilData[key as keyof SoilData]}
+                    <span className="text-lg text-gray-500 ml-2">
+                      {key === "ph"
+                        ? "pH"
+                        : key === "temperature"
+                        ? "°C"
+                        : key === "salinity"
+                        ? "dS/m"
+                        : "%"}
+                    </span>
+                  </div>
+                  <div className="relative pt-4">
+                    <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-green-400 to-green-600"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            ((soilData[key as keyof SoilData] -
+                              optimalRanges[key as keyof SoilData].min) /
+                              (optimalRanges[key as keyof SoilData].max -
+                                optimalRanges[key as keyof SoilData].min)) *
+                              100
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-500 mt-2">
+                      <span>
+                        Low ({optimalRanges[key as keyof SoilData].min})
+                      </span>
+                      <span>Optimal</span>
+                      <span>
+                        High ({optimalRanges[key as keyof SoilData].max})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default PestDiseaseAlerts;
+export default ReportsAndAnalytics;

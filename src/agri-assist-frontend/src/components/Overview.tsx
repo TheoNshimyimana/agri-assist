@@ -227,7 +227,7 @@ const StatCard = ({
   <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
     <div className="text-green-600 text-4xl">{icon}</div>
     <h3 className="text-lg font-semibold text-gray-800 mt-2">{title}</h3>
-    <p className="text-gray-600 text-2xl text-center">{description}</p>
+    <p className="text-gray-600 text-xl mt-3 text-center">{description}</p>
   </div>
 );
 

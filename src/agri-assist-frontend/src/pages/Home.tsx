@@ -25,7 +25,7 @@ const Home = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar (Scrollable Independently) */}
         <aside className="w-64 bg-gray-800 text-white p-4 h-full overflow-y-auto">
-          <h2 className="text-xl font-bold">Welcome Theophile</h2>
+          <h2 className="text-base text-green-500 font-bold">Ai-Powered AGRI-Assist</h2>
           <ul className="mt-4">
             <Link to="/home/overview">
               <li className="py-4 px-4 hover:bg-gray-700 text-base rounded cursor-pointer">

@@ -94,12 +94,12 @@ const MarketPrices: React.FC = () => {
           <h1 className="text-4xl font-bold text-green-800 flex items-center mb-6 justify-center gap-2">
             <PieChart className="w-8 h-8" /> Rwanda Agricultural Market Prices
           </h1>
-          <p className="text-gray-800 flex mb-6 items-center justify-center gap-1">
-            <Info className="w-4 h-4" /> Rwanda Agricultural Market Prices
-            provides real-time updates on crop prices across different regions,
-            helping farmers and traders make informed decisions. The platform
-            sources its data from the National Agricultural Export Development
-            Board (NAEB) and updates prices daily.
+          <p className="text-gray-800 text-lg flex mb-6 items-center justify-center gap-1">
+            Rwanda Agricultural Market Prices provides real-time updates on crop
+            prices across different regions, helping farmers and traders make
+            informed decisions. The platform sources its data from the National
+            Agricultural Export Development Board (NAEB) and updates prices
+            daily.
           </p>
         </div>
 
@@ -112,7 +112,7 @@ const MarketPrices: React.FC = () => {
             placeholder="Search crops..."
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-lg border focus:ring-2 focus:ring-green-500 focus:border-green-500"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border focus:ring-2 focus:ring-green-500 focus:border-green-500"
           />
         </div>
 
@@ -121,17 +121,21 @@ const MarketPrices: React.FC = () => {
             <table className="w-full">
               <thead className="bg-green-700 text-white">
                 <tr>
-                  <th className="px-6 py-4 text-left font-semibold">Crop</th>
-                  <th className="px-6 py-4 text-left font-semibold">
+                  <th className="px-6 py-2 text-base text-left font-semibold">
+                    Crop
+                  </th>
+                  <th className="px-6 py-2 text-base text-left font-semibold">
                     Price/Kg (FRW)
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold">
+                  <th className="px-6 py-2 text-base text-left font-semibold">
                     Trending Price (FRW)
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold">
+                  <th className="px-6 py-2 text-left text-base font-semibold">
                     Location
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold">Date</th>
+                  <th className="px-6 py-2 text-left text-base font-semibold">
+                    Date
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-green-50">
