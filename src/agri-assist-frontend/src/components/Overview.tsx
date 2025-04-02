@@ -22,7 +22,7 @@ import {
   FaTractor,
 } from "react-icons/fa";
 
-// Register Chart Components
+
 ChartJS.register(
   Title,
   Tooltip,
@@ -37,7 +37,7 @@ const Overview: React.FC = () => {
   const [climateData, setClimateData] = useState<number[]>([]);
   const [cropGrowthData, setCropGrowthData] = useState<number[]>([]);
 
-  // Simulate API Data Fetching for Charts
+  
   useEffect(() => {
     const fetchData = () => {
       setClimateData([15, 18, 21, 25, 28, 32, 30, 27, 24, 20, 16, 14]); 
@@ -46,7 +46,7 @@ const Overview: React.FC = () => {
     fetchData();
   }, []);
 
-  // Chart Data
+  
   const climateChartData = {
     labels: [
       "Jan",
@@ -112,7 +112,7 @@ const Overview: React.FC = () => {
         and sustainability.
       </p>
 
-      {/* Key Statistics */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8 w-full max-w-5xl">
         <StatCard
           icon={<FaSeedling />}
@@ -161,7 +161,7 @@ const Overview: React.FC = () => {
         />
       </div>
 
-      {/* AI-Driven Insights */}
+      
       <div className="mt-10 w-full max-w-6xl flex flex-col justify-center items-center bg-white p-6 rounded-lg shadow-lg">
         <h3 className="text-3xl font-semibold text-green-500 mb-4">
           AI-Driven Insights
@@ -194,7 +194,7 @@ const Overview: React.FC = () => {
         </ul>
       </div>
 
-      {/* Charts Section */}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 w-full max-w-5xl">
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h3 className="text-xl font-semibold text-green-500 mb-4">

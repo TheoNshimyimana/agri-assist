@@ -23,7 +23,7 @@ const Home = () => {
       <Navbar />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar (Scrollable Independently) */}
+      
         <aside className="w-64 bg-gray-800 text-white p-4 h-full overflow-y-auto">
           <h2 className="text-base text-green-500 font-bold">Ai-Powered AGRI-Assist</h2>
           <ul className="mt-4">
@@ -76,7 +76,6 @@ const Home = () => {
           </Button>
         </aside>
 
-        {/* Main Content (Scrollable Independently) */}
         <main className="flex-1 p-6 bg-gray-100 overflow-y-auto h-full">
           <Outlet />
         </main>

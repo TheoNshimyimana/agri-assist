@@ -1,5 +1,5 @@
 import React from "react";
-import { Leaf, Bug, Sprout, ShieldAlert, SprayCan } from "lucide-react";
+import {  Bug, Sprout, ShieldAlert, SprayCan } from "lucide-react";
 
 interface PestDisease {
   name: string;

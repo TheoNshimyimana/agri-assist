@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useEffect } from "react";
 import { Info, Leaf, Download } from "lucide-react";
 import {
@@ -31,7 +27,7 @@ interface SoilData {
   microbialActivity: number;
 }
 
-// Sample fallback data to display if the API returns nothing
+
 const sampleData: SoilData[] = [
   {
     timestamp: new Date().toISOString(),
@@ -67,7 +63,7 @@ const fetchSoilData = async (): Promise<SoilData[]> => {
   try {
     const response = await fetch("https://api.example.com/soil-data");
     const data = await response.json();
-    // If the API returns an empty array or invalid data, fallback to sample data
+    
     if (!data || data.length === 0) {
       return sampleData;
     }

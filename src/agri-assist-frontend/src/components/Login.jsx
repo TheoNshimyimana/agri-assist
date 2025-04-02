@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AuthClient } from "@dfinity/auth-client";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-import Bg from "../images/bg.jpg";  // Ensure this path is correct
+import Bg from "../images/bg.jpg";  
 
 const Login = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

@@ -107,9 +107,7 @@ const CropsMonitoring: React.FC = () => {
             </p>
 
             <div className="mt-4">
-              {/* <button className="bg-blue-300 text-white rounded-lg w-full">
-                Update Status
-              </button> */}
+             
             </div>
           </div>
         ))}

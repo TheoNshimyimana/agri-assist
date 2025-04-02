@@ -7,9 +7,8 @@ const Navbar = () => {
     localStorage.getItem("theme") === "dark"
   );
   const [showDropdown, setShowDropdown] = useState(false);
-  const [notifications, setNotifications] = useState(3); // Example notification count
+  const [notifications, setNotifications] = useState(3);
 
-  // Handle dark mode toggle
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -22,12 +21,11 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-md p-4 flex justify-between items-center">
-      {/* Logo */}
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ai-Powered AGRI-Assist (AI for Sustainable Farming) 🌱</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        Ai-Powered AGRI-Assist (AI for Sustainable Farming) 🌱
+      </h1>
 
-      {/* Icons */}
       <div className="flex items-center gap-4">
-        {/* Notification Icon */}
         <div className="relative cursor-pointer">
           <Bell className="w-6 h-6 text-gray-700 dark:text-gray-300" />
           {notifications > 0 && (
@@ -37,18 +35,23 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Dark Mode Toggle */}
         <Button
           variant="ghost"
           onClick={() => setDarkMode(!darkMode)}
           className="rounded-full p-2"
         >
-          {darkMode ? <Sun className="w-6 h-6 text-yellow-400" /> : <Moon className="w-6 h-6 text-white" />}
+          {darkMode ? (
+            <Sun className="w-6 h-6 text-yellow-400" />
+          ) : (
+            <Moon className="w-6 h-6 text-white" />
+          )}
         </Button>
 
-        {/* User Dropdown */}
         <div className="relative">
-          <button onClick={() => setShowDropdown(!showDropdown)} className="focus:outline-none">
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="focus:outline-none"
+          >
             <User className="w-8 h-8 text-white dark:text-gray-300 rounded-full border p-1" />
           </button>
 
