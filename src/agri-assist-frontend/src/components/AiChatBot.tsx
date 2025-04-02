@@ -1,6 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { HttpAgent, Actor } from "@dfinity/agent";
+import { idlFactory } from "../../../declarations/agri-assist-backend"; // Auto-generated
 import { SendHorizonal, Loader2 } from "lucide-react";
+
+const CANISTER_ID = "bkyz2-fmaaa-aaaaa-qaaaq-cai";
+
+// communicate with the canister
+const agent = new HttpAgent({ host: "http://localhost:3000" }); 
+const chatbotBackend = Actor.createActor(idlFactory, {
+  agent,
+  canisterId: CANISTER_ID,
+});
 
 const Chatbot: React.FC = () => {
   const [message, setMessage] = useState("");
@@ -8,77 +18,26 @@ const Chatbot: React.FC = () => {
     []
   );
   const [loading, setLoading] = useState(false);
-  const chatRef = useRef<HTMLDivElement>(null);
-
-
-  const API_KEY = "sk-cFuabsslQHwsgj8SOQLHH4EIC7U9BKQEjDbyfiguZ2aUaexK";
 
   const sendMessage = async () => {
     if (!message.trim()) return;
 
-   
-    if (
-      API_KEY.startsWith("goey_sk_live") &&
-      window.location.hostname === "localhost"
-    ) {
-      alert("⚠️ Never use production keys in local development!");
-      return;
-    }
-
     setLoading(true);
-    const userMessage = { role: "user", text: message };
-    setResponses((prev) => [...prev, userMessage]);
+    setResponses((prev) => [...prev, { role: "user", text: message }]);
     setMessage("");
 
     try {
-      const response = await axios.post(
-        "https://api.gooey.ai/v2/Loop/",
-        {
-          model: "gpt-3.5-turbo",
-          input: message, 
-          
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${API_KEY}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const botResponse = {
-        role: "bot",
-        text: response.data.output, // Gooey response structure
-      };
-      setResponses((prev) => [...prev, botResponse]);
+      
+      const response: string = String(await chatbotBackend.chat(message));
+      setResponses((prev) => [...prev, { role: "bot", text: response }]);
     } catch (error) {
-      let errorMessage = "Unknown error";
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.detail || "API Error";
-      }
+      console.error("Chatbot error:", error);
       setResponses((prev) => [
         ...prev,
-        {
-          role: "bot",
-          text: `⚠️ Error: ${errorMessage}`,
-        },
+        { role: "bot", text: "⚠️ Error communicating with backend" },
       ]);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Auto-scroll to bottom
-  useEffect(() => {
-    if (chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
-    }
-  }, [responses]);
-
-  // Enter key handler
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !loading) {
-      sendMessage();
     }
   };
 
@@ -86,13 +45,10 @@ const Chatbot: React.FC = () => {
     <div className="h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-6">
       <div className="w-full max-w-full rounded-lg shadow-lg flex flex-col">
         <div className="p-4 rounded-t-lg text-center text-3xl font-bold mb-4">
-          How Can I Assist you Today
+          How Can I Assist You Today?
         </div>
 
-        <div
-          ref={chatRef}
-          className="flex-1 p-4 space-y-3 overflow-y-auto max-h-96"
-        >
+        <div className="flex-1 p-4 space-y-3 overflow-y-auto max-h-96">
           {responses.map((res, index) => (
             <div
               key={index}
@@ -105,7 +61,7 @@ const Chatbot: React.FC = () => {
                   res.role === "user"
                     ? "bg-blue-500 text-white text-sm"
                     : "bg-gray-700 text-gray-200 text-sm"
-                } break-words`}
+                }`}
               >
                 {res.text}
               </div>
@@ -127,9 +83,9 @@ const Chatbot: React.FC = () => {
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyPress}
+            onKeyDown={(e) => e.key === "Enter" && !loading && sendMessage()}
             className="flex-1 p-2 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none"
-            placeholder="Ask Gooey AI..."
+            placeholder="Ask the AI..."
             disabled={loading}
           />
           <button
