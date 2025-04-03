@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
   Search,
   PieChart,
@@ -8,20 +9,23 @@ import {
   TrendingUp,
   TrendingDown,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface MarketData {
   crop: string;
   pricePerKg: number;
   location: string;
   date: string;
+  action: string;
   trendingPrice: number;
+  url?: string;
 }
 
 const MarketPrices: React.FC = () => {
   const [filter, setFilter] = useState("");
   const currentDate = new Date().toLocaleDateString("en-RW", {
     year: "numeric",
-    month: "long",
+    month: "numeric",
     day: "numeric",
   });
 
@@ -38,6 +42,8 @@ const MarketPrices: React.FC = () => {
       location: "Kigali",
       date: currentDate,
       trendingPrice: generateTrendingPrice(600),
+      action: "Buy",
+      url: "/home/maize",
     },
     {
       crop: "Rice",
@@ -45,6 +51,8 @@ const MarketPrices: React.FC = () => {
       location: "Musanze",
       date: currentDate,
       trendingPrice: generateTrendingPrice(1700),
+      action: "Buy",
+      url: "/home/rice",
     },
     {
       crop: "Beans",
@@ -52,10 +60,14 @@ const MarketPrices: React.FC = () => {
       location: "Rubavu",
       date: currentDate,
       trendingPrice: generateTrendingPrice(1500),
+      action: "Buy",
+      url: "/home/beans",
     },
     {
       crop: "Potatoes",
       pricePerKg: 650,
+      action: "Buy",
+      url: "/home/rice",
       location: "Huye",
       date: currentDate,
       trendingPrice: generateTrendingPrice(650),
@@ -66,6 +78,8 @@ const MarketPrices: React.FC = () => {
       location: "Rwamagana",
       date: currentDate,
       trendingPrice: generateTrendingPrice(450),
+      action: "Buy",
+      url: "/home/rice",
     },
     {
       crop: "Wheat",
@@ -73,6 +87,8 @@ const MarketPrices: React.FC = () => {
       location: "Nyagatare",
       date: currentDate,
       trendingPrice: generateTrendingPrice(850),
+      action: "Buy",
+      url: "/home/rice",
     },
     {
       crop: "Sorghum",
@@ -80,6 +96,8 @@ const MarketPrices: React.FC = () => {
       location: "Karongi",
       date: currentDate,
       trendingPrice: generateTrendingPrice(700),
+      action: "Buy",
+      url: "/home/rice",
     },
   ];
 
@@ -92,7 +110,7 @@ const MarketPrices: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-green-800 flex items-center mb-6 justify-center gap-2">
-            <PieChart className="w-8 h-8" /> Rwanda Agricultural Market Prices
+            Rwanda Agricultural Market Prices
           </h1>
           <p className="text-gray-800 text-lg flex mb-6 items-center justify-center gap-1">
             Rwanda Agricultural Market Prices provides real-time updates on crop
@@ -136,6 +154,9 @@ const MarketPrices: React.FC = () => {
                   <th className="px-6 py-2 text-left text-base font-semibold">
                     Date
                   </th>
+                  <th className="px-6 py-2 text-left text-base font-semibold">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-green-50">
@@ -144,7 +165,7 @@ const MarketPrices: React.FC = () => {
                     key={index}
                     className="hover:bg-green-50 transition-colors"
                   >
-                    <td className="px-6 py-4 text-lg font-semibold text-green-900">
+                    <td className="px-6 py-4 text-base font-semibold text-green-900">
                       {item.crop}
                     </td>
                     <td className="px-6 py-4">
@@ -156,23 +177,33 @@ const MarketPrices: React.FC = () => {
                       <span
                         className={`px-3 py-1 rounded-full text-sm flex items-center gap-1 ${
                           item.trendingPrice >= item.pricePerKg
-                            ? "bg-green-100 text-lg text-green-700"
+                            ? "bg-green-100 text-base text-green-700"
                             : "bg-red-100 text-red-700"
                         }`}
                       >
                         {item.trendingPrice >= item.pricePerKg ? (
-                          <TrendingUp className="w-4 h-4 text-lg font-semibold" />
+                          <TrendingUp className="w-4 h-4 text-base font-semibold" />
                         ) : (
-                          <TrendingDown className="w-4 h-4 text-lg font-semibold" />
+                          <TrendingDown className="w-4 h-4 text-base font-semibold" />
                         )}
                         FRW {item.trendingPrice.toFixed(0)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-gray-600 text-lg font-semibold">
+                    <td className="px-6 py-4 text-gray-600 text-base font-semibold">
                       {item.location}
                     </td>
-                    <td className="px-6 py-4 text-gray-500 text-lg font-semibold">
+                    <td className="px-6 py-4 text-gray-500 text-base font-semibold">
                       {item.date}
+                    </td>
+                    <td className=" text-white text-base  font-semibold">
+                      <Link to={item.url || "#"}>
+                        <button
+                          onClick={() => item.url}
+                          className=" bg-green-600 px-8 mx-4 cursor-pointer rounded-full"
+                        >
+                          {item.action}
+                        </button>
+                      </Link>
                     </td>
                   </tr>
                 ))}

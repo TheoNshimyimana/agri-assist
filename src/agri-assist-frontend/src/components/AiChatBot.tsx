@@ -42,7 +42,7 @@ const Chatbot: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center bg-gray-900 text-white p-6">
+    <div className="h-screen flex flex-col items-center justify-center bg-white text-gray-700 p-6">
       <div className="w-full max-w-full rounded-lg shadow-lg flex flex-col">
         <div className="p-4 rounded-t-lg text-center text-3xl font-bold mb-4">
           How Can I Assist You Today?
@@ -60,7 +60,7 @@ const Chatbot: React.FC = () => {
                 className={`p-3 rounded-lg max-w-xs ${
                   res.role === "user"
                     ? "bg-blue-500 text-white text-sm"
-                    : "bg-gray-700 text-gray-200 text-sm"
+                    : "bg-green-500 text-gray-200 text-sm"
                 }`}
               >
                 {res.text}
@@ -70,21 +70,21 @@ const Chatbot: React.FC = () => {
 
           {loading && (
             <div className="flex justify-start">
-              <div className="p-3 rounded-lg bg-gray-700 text-gray-200 flex items-center">
+              <div className="p-3 rounded-lg bg-green-700 text-gray-200 flex items-center">
                 <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                Thinking...
+                Loading...
               </div>
             </div>
           )}
         </div>
 
-        <div className="p-3 border-t border-gray-700 flex items-center space-x-2">
+        <div className="p-3   flex items-center space-x-2">
           <input
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !loading && sendMessage()}
-            className="flex-1 p-2 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none"
+            className="flex-1 p-2 rounded-lg bg-white border border-gray-400 text-gray-600 placeholder-gray-400 focus:outline-none"
             placeholder="Ask the AI..."
             disabled={loading}
           />

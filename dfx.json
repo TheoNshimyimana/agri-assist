@@ -13,13 +13,16 @@
       ],
       "type": "assets",
       "workspace": "agri-assist-frontend",
-      "headers": "src/agri-assist-frontend/headers.json"
+      "headers": {
+        "Content-Security-Policy": "connect-src 'self' https://api.openweathermap.org; default-src 'self'; script-src 'self'"
+      }
     }
   },
   "defaults": {
     "build": {
       "args": "",
-      "packtool": "mops sources"
+      "packtool": "mops sources",
+      "fetch_root_key": true
     }
   },
   "output_env_file": ".env",
