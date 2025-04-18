@@ -24,10 +24,10 @@ Once the job completes, your application will be available at `http://localhost:
 
 If you are making frontend changes, you can start a development server with
 
-bash
+```bash
 cd agr_assist/src/agr_assist_frontend
 npm start
-
+```
 
 Which will start a server at `http://localhost:3000`, proxying API requests to the replica at port 4943.
 
