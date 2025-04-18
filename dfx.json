@@ -1,5 +1,6 @@
 {
   "canisters": {
+<<<<<<< HEAD
     "agr_assist_backend": {
       "main": "src/agr_assist_backend/main.mo",
       "type": "motoko"
@@ -13,14 +14,41 @@
       ],
       "type": "assets",
       "build": "npm run build --prefix src/agr_assist_frontend"
+=======
+    "agri-assist-backend": {
+      "main": "src/agri-assist-backend/main.mo",
+      "type": "motoko"
+    },
+    "agri-assist-frontend": {
+      "dependencies": [
+        "agri-assist-backend"
+      ],
+      "source": [
+        "src/agri-assist-frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "agri-assist-frontend",
+      "headers": {
+        "Content-Security-Policy": "connect-src 'self' https://api.openweathermap.org; default-src 'self'; script-src 'self'"
+      }
+>>>>>>> e8d9f90f9da1b71df144e2249187434b189a9008
     }
   },
   "defaults": {
     "build": {
       "args": "",
+<<<<<<< HEAD
       "packtool": "mops sources"
+=======
+      "packtool": "mops sources",
+      "fetch_root_key": true
+>>>>>>> e8d9f90f9da1b71df144e2249187434b189a9008
     }
   },
   "output_env_file": ".env",
   "version": 1
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> e8d9f90f9da1b71df144e2249187434b189a9008
