@@ -12,13 +12,13 @@
         "src/agr_assist_frontend/dist"
       ],
       "type": "assets",
-      "workspace": "agr_assist_frontend"
+      "build": "npm run build --prefix src/agr_assist_frontend"
     }
   },
   "defaults": {
     "build": {
       "args": "",
-      "packtool": ""
+      "packtool": "mops sources"
     }
   },
   "output_env_file": ".env",

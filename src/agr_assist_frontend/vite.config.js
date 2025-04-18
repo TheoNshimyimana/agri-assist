@@ -1,10 +1,10 @@
-import { fileURLToPath, URL } from 'url';
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
-import environment from 'vite-plugin-environment';
-import dotenv from 'dotenv';
+import { fileURLToPath, URL } from "url";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import environment from "vite-plugin-environment";
+import dotenv from "dotenv";
 
-dotenv.config({ path: '../../.env' });
+dotenv.config({ path: "../../.env" });
 
 export default defineConfig({
   build: {
@@ -24,6 +24,15 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        res.setHeader(
+          "Content-Security-Policy",
+          "connect-src 'self' https://api.openweathermap.org;"
+        );
+        next();
+      });
+    },
   },
   plugins: [
     react(),
@@ -39,6 +48,6 @@ export default defineConfig({
         ),
       },
     ],
-    dedupe: ['@dfinity/agent'],
+    dedupe: ["@dfinity/agent"],
   },
 });
